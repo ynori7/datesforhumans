@@ -13,31 +13,31 @@ func ParseDate(from time.Time, s string) Time {
 	if dateConfig.period != unknown {
 		switch dateConfig.period {
 		case day:
-			return Time{t: from.AddDate(0, 0, dateConfig.direction*dateConfig.amount)}
+			return Time{t: from.AddDate(0, 0, dateConfig.direction*dateConfig.amount), dateString: s}
 		case week:
-			return Time{t: from.AddDate(0, 0, dateConfig.direction*7*dateConfig.amount)}
+			return Time{t: from.AddDate(0, 0, dateConfig.direction*7*dateConfig.amount), dateString: s}
 		case month:
-			return Time{t: from.AddDate(0, dateConfig.direction*dateConfig.amount, 0)}
+			return Time{t: from.AddDate(0, dateConfig.direction*dateConfig.amount, 0), dateString: s}
 		case year:
-			return Time{t: from.AddDate(dateConfig.direction*dateConfig.amount, 0, 0)}
+			return Time{t: from.AddDate(dateConfig.direction*dateConfig.amount, 0, 0), dateString: s}
 		case hour:
-			return Time{t: from.Add(time.Duration(dateConfig.direction*dateConfig.amount) * time.Hour)}
+			return Time{t: from.Add(time.Duration(dateConfig.direction*dateConfig.amount) * time.Hour), dateString: s}
 		case minute:
-			return Time{t: from.Add(time.Duration(dateConfig.direction*dateConfig.amount) * time.Minute)}
+			return Time{t: from.Add(time.Duration(dateConfig.direction*dateConfig.amount) * time.Minute), dateString: s}
 		case second:
-			return Time{t: from.Add(time.Duration(dateConfig.direction*dateConfig.amount) * time.Second)}
+			return Time{t: from.Add(time.Duration(dateConfig.direction*dateConfig.amount) * time.Second), dateString: s}
 		}
 	}
 
 	if dateConfig.weekDay != unknown {
-		return Time{t: getNextWeekday(from, time.Weekday(dateConfig.weekDay), dateConfig.direction)}
+		return Time{t: getNextWeekday(from, time.Weekday(dateConfig.weekDay), dateConfig.direction), dateString: s}
 	}
 
 	if dateConfig.month != unknown {
-		return Time{t: getNextMonth(from, time.Month(dateConfig.month), dateConfig.direction)}
+		return Time{t: getNextMonth(from, time.Month(dateConfig.month), dateConfig.direction), dateString: s}
 	}
 
-	return Time{t: from}
+	return Time{t: from, dateString: s}
 }
 
 func getNextWeekday(date time.Time, weekday time.Weekday, direction int) time.Time {
