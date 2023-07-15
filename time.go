@@ -18,6 +18,6 @@ func (t Time) At(s string) Time {
 	if !timeConfig.isEmpty() {
 		t.t = time.Date(t.t.Year(), t.t.Month(), t.t.Day(), timeConfig.hour, timeConfig.minute, timeConfig.second, 0, t.t.Location())
 	}
-t.t.Format(time.RFC1123)
+
 	return t
 }

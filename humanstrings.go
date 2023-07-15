@@ -214,7 +214,7 @@ type timeOfDay struct {
 }
 
 func (t timeOfDay) isEmpty() bool {
-	return t.hour == 0 && t.minute == 0 && t.second == 0
+	return t.hour < 0
 }
 
 func parseTime(s string) timeOfDay {
@@ -229,35 +229,38 @@ func parseTime(s string) timeOfDay {
 	s = strings.TrimSpace(s) //in case we trimmed off the am/pm
 
 	parts := strings.Split(s, ":")
-	if len(parts) > 3 {
-		return timeOfDay{}
-	}
-
-	if len(parts) == 1 {
-		hour, err := strconv.Atoi(parts[0])
-		if err != nil {
-			return timeOfDay{}
-		}
-		return timeOfDay{
-			hour: hour + amPmModifier,
-		}
+	if len(parts) > 3 || len(parts) == 0 {
+		return timeOfDay{hour: -1}
 	}
 
 	hour, err := strconv.Atoi(parts[0])
 	if err != nil {
-		return timeOfDay{}
+		return timeOfDay{hour: -1}
+	}
+	if hour == 12 && amPmModifier == 12 {
+		amPmModifier = 0
+	} else if hour == 12 && amPmModifier == 0 {
+		amPmModifier = -12
+	}
+
+	if len(parts) == 1 {
+		return timeOfDay{
+			hour:   hour + amPmModifier,
+			minute: 0,
+			second: 0,
+		}
 	}
 
 	minute, err := strconv.Atoi(parts[1])
 	if err != nil {
-		return timeOfDay{}
+		return timeOfDay{hour: -1}
 	}
 
 	second := 0
 	if len(parts) == 3 {
 		second, err = strconv.Atoi(parts[2])
 		if err != nil {
-			return timeOfDay{}
+			return timeOfDay{hour: -1}
 		}
 	}
 

@@ -44,12 +44,20 @@ func TestAt(t *testing.T) {
 			in:   "5pm",
 			want: time.Date(2023, time.July, 15, 17, 0, 0, 0, time.UTC),
 		},
+		{
+			in:   "12am",
+			want: time.Date(2023, time.July, 15, 0, 0, 0, 0, time.UTC),
+		},
+		{
+			in:   "12pm",
+			want: time.Date(2023, time.July, 15, 12, 0, 0, 0, time.UTC),
+		},
 	}
 
 	for _, test := range tests {
 		got := Time{t: base}.At(test.in)
 		if got.Time() != test.want {
-			t.Errorf("Time.At(%q) = %v, want %v", test.in, got, test.want)
+			t.Errorf("Time.At(%q) = %v, want %v", test.in, got.Time().Format(time.DateTime), test.want)
 		}
 	}
 
