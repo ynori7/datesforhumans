@@ -21,8 +21,6 @@ t := datesforhumans.ParseDate(now, "next monday").At("10pm").Time() //t is a sta
 fmt.Println(t.Format(time.DateTime)) //prints 2023-07-17 22:00:00
 ```
 
-Note that if it's July 17 and you request "next August", you'll get August 17.
-
 This pattern can also be repeated until a given date:
 
 ```go
@@ -34,8 +32,6 @@ for _, r := range repeated {
 // 2023-07-17 22:00:00
 // 2023-07-24 22:00:00
 // 2023-07-31 22:00:00
-// 2023-08-07 22:00:00
-// 2023-08-14 22:00:00
 ```
 
 It's also possible to create date ranges, for example:
@@ -57,6 +53,7 @@ for _, r := range repeated {
 // 2023-07-17 22:00:00 2023-07-18 23:00:00
 // 2023-07-24 22:00:00 2023-07-25 23:00:00
 // 2023-07-31 22:00:00 2023-08-01 23:00:00
-// 2023-08-07 22:00:00 2023-08-08 23:00:00
-// 2023-08-14 22:00:00 2023-08-15 23:00:00
 ```
+
+### Caveats
+- Note that if it's July 17 and you request "next August", you'll get August 1. However if you say "in 1 month" you'll get August 17. It's worth noting there are edge cases where it's January 30 and you say "in 1 month" (returns March 2nd).

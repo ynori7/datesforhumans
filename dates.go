@@ -13,19 +13,22 @@ func ParseDate(from time.Time, s string) Time {
 	if dateConfig.period != unknown {
 		switch dateConfig.period {
 		case day:
-			return Time{t: from.AddDate(0, 0, dateConfig.direction*dateConfig.amount), dateString: s}
+			return Time{t: from.AddDate(0, 0, dateConfig.direction*getAmountOrOne(dateConfig)), dateString: s}
 		case week:
-			return Time{t: from.AddDate(0, 0, dateConfig.direction*7*dateConfig.amount), dateString: s}
+			return Time{t: from.AddDate(0, 0, dateConfig.direction*7*getAmountOrOne(dateConfig)), dateString: s}
 		case month:
+			if dateConfig.amount == unknown {
+				return Time{t: time.Date(from.Year(), from.Month()+time.Month(dateConfig.direction), 1, 0, 0, 0, 0, from.Location()), dateString: s}
+			}
 			return Time{t: from.AddDate(0, dateConfig.direction*dateConfig.amount, 0), dateString: s}
 		case year:
-			return Time{t: from.AddDate(dateConfig.direction*dateConfig.amount, 0, 0), dateString: s}
+			return Time{t: from.AddDate(dateConfig.direction*getAmountOrOne(dateConfig), 0, 0), dateString: s}
 		case hour:
-			return Time{t: from.Add(time.Duration(dateConfig.direction*dateConfig.amount) * time.Hour), dateString: s}
+			return Time{t: from.Add(time.Duration(dateConfig.direction*getAmountOrOne(dateConfig)) * time.Hour), dateString: s}
 		case minute:
-			return Time{t: from.Add(time.Duration(dateConfig.direction*dateConfig.amount) * time.Minute), dateString: s}
+			return Time{t: from.Add(time.Duration(dateConfig.direction*getAmountOrOne(dateConfig)) * time.Minute), dateString: s}
 		case second:
-			return Time{t: from.Add(time.Duration(dateConfig.direction*dateConfig.amount) * time.Second), dateString: s}
+			return Time{t: from.Add(time.Duration(dateConfig.direction*getAmountOrOne(dateConfig)) * time.Second), dateString: s}
 		}
 	}
 
@@ -71,5 +74,12 @@ func getNextMonth(date time.Time, month time.Month, direction int) time.Time {
 		}
 	}
 
-	return date.AddDate(0, monthsDiff, 0)
+	return time.Date(date.Year(), date.Month(), 1, 0, 0, 0, 0, date.Location()).AddDate(0, monthsDiff, 0)
+}
+
+func getAmountOrOne(dateConfig dateConfig) int {
+	if dateConfig.amount == unknown {
+		return 1
+	}
+	return dateConfig.amount
 }

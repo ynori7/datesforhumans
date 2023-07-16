@@ -28,4 +28,11 @@ func main() {
 	for _, r := range repeatedRange {
 		fmt.Println(r.Start.Time().Format(time.DateTime), r.End.Time().Format(time.DateTime))
 	}
+
+	fmt.Println("\nParse")
+	now2 := time.Date(2023, time.January, 30, 17, 4, 0, 0, time.UTC)
+	t2 := datesforhumans.ParseDate(now2, "next February").Time()
+	fmt.Println(t2.Format(time.DateTime)) //prints february 1st
+	t2 = datesforhumans.ParseDate(now2, "in 1 month").Time()
+	fmt.Println(t2.Format(time.DateTime)) //prints march 1st
 }

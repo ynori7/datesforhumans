@@ -38,7 +38,7 @@ func TestParseDate(t *testing.T) {
 		},
 		{
 			in:   "next month",
-			want: time.Date(2023, time.August, 15, 17, 4, 0, 0, time.UTC),
+			want: time.Date(2023, time.August, 1, 0, 0, 0, 0, time.UTC), // should not preserve the day and time
 		},
 		{
 			in:   "next year",
@@ -66,7 +66,7 @@ func TestParseDate(t *testing.T) {
 		},
 		{
 			in:   "last month",
-			want: time.Date(2023, time.June, 15, 17, 4, 0, 0, time.UTC),
+			want: time.Date(2023, time.June, 1, 0, 0, 0, 0, time.UTC), // should not preserve the day and time
 		},
 		{
 			in:   "last year",
@@ -78,11 +78,15 @@ func TestParseDate(t *testing.T) {
 		},
 		{
 			in:   "last january",
-			want: time.Date(2023, time.January, 15, 17, 4, 0, 0, time.UTC),
+			want: time.Date(2023, time.January, 1, 0, 0, 0, 0, time.UTC), // should not preserve the day and time
 		},
 		{
 			in:   "last july",
-			want: time.Date(2022, time.July, 15, 17, 4, 0, 0, time.UTC),
+			want: time.Date(2022, time.July, 1, 0, 0, 0, 0, time.UTC), // should not preserve the day and time
+		},
+		{
+			in:   "next july",
+			want: time.Date(2024, time.July, 1, 0, 0, 0, 0, time.UTC), // should not preserve the day and time
 		},
 		{
 			in:   "3 months ago",

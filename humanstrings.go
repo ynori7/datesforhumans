@@ -72,10 +72,6 @@ func parseNaturalDateString(s string) dateConfig {
 		date.direction = next
 	}
 
-	if date.period != unknown && date.amount == unknown {
-		date.amount = 1
-	}
-
 	return date
 }
 

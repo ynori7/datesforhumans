@@ -47,7 +47,7 @@ func TestParseNaturalDateString(t *testing.T) {
 				weekDay:   unknown,
 				month:     unknown,
 				period:    month,
-				amount:    1,
+				amount:    unknown,
 			},
 		},
 		{
@@ -57,7 +57,7 @@ func TestParseNaturalDateString(t *testing.T) {
 				weekDay:   unknown,
 				month:     unknown,
 				period:    year,
-				amount:    1,
+				amount:    unknown,
 			},
 		},
 		{
@@ -67,7 +67,7 @@ func TestParseNaturalDateString(t *testing.T) {
 				weekDay:   unknown,
 				month:     unknown,
 				period:    week,
-				amount:    1,
+				amount:    unknown,
 			},
 		},
 		{
@@ -117,7 +117,7 @@ func TestParseNaturalDateString(t *testing.T) {
 				weekDay:   unknown,
 				month:     unknown,
 				period:    month,
-				amount:    1,
+				amount:    unknown,
 			},
 		},
 		{
@@ -127,7 +127,7 @@ func TestParseNaturalDateString(t *testing.T) {
 				weekDay:   unknown,
 				month:     unknown,
 				period:    year,
-				amount:    1,
+				amount:    unknown,
 			},
 		},
 		{
@@ -137,7 +137,7 @@ func TestParseNaturalDateString(t *testing.T) {
 				weekDay:   unknown,
 				month:     unknown,
 				period:    week,
-				amount:    1,
+				amount:    unknown,
 			},
 		},
 		{
