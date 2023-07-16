@@ -84,7 +84,7 @@ func TestRepeatTime(t *testing.T) {
 func TestParseRange(t *testing.T) {
 	base := time.Date(2023, time.July, 15, 17, 4, 0, 0, time.UTC)
 
-	actual := ParseRange(base, "next monday", "5pm", "next tuesday", "6pm")
+	actual := ParseRange(base, "next monday at 5pm", "next tuesday at 6pm")
 
 	expectedStart := time.Date(2023, time.July, 17, 17, 0, 0, 0, time.UTC)
 	if actual.Start.t != expectedStart {

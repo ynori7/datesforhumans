@@ -12,12 +12,17 @@ You can take any base time (e.g. `time.Now()`) and transform it using natural la
 - this wednesday
 - in 15 seconds
 - next year
+- next monday at 10pm
 
 Example usage (see it in `example/main.go`):
 
 ```go
 now := time.Now() //e.g. 2023-07-15 17:03:00
 t := datesforhumans.ParseDate(now, "next monday").At("10pm").Time() //t is a standard time.Time
+fmt.Println(t.Format(time.DateTime)) //prints 2023-07-17 22:00:00
+
+//alternatively
+t2 := datesforhumans.ParseDate(now, "next monday at 10pm").Time() //t is a standard time.Time
 fmt.Println(t.Format(time.DateTime)) //prints 2023-07-17 22:00:00
 ```
 
@@ -38,7 +43,7 @@ It's also possible to create date ranges, for example:
 
 ```go
 now := time.Now() //e.g. 2023-07-15 17:03:00
-r := ParseRange(now, "next monday", "10pm", "next tuesday", "11pm")
+r := ParseRange(now, "next monday at 10pm", "next tuesday at 11pm")
 fmt.Println(r.Start.Time().Format(time.DateTime), r.End.Time().Format(time.DateTime)) //prints 2023-07-17 22:00:00
 ```
 

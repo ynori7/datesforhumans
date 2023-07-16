@@ -108,12 +108,20 @@ func TestParseDate(t *testing.T) {
 			in:   "in 22 minutes",
 			want: time.Date(2023, time.July, 15, 17, 26, 0, 0, time.UTC),
 		},
+		{
+			in:   "next monday at 10pm",
+			want: time.Date(2023, time.July, 17, 22, 0, 0, 0, time.UTC),
+		},
+		{
+			in:   "last monday at 10pm",
+			want: time.Date(2023, time.July, 10, 22, 0, 0, 0, time.UTC),
+		},
 	}
 
 	for _, test := range tests {
 		got := ParseDate(base, test.in)
 		if got.Time() != test.want {
-			t.Errorf("ParseDate(%q) = %v, want %v", test.in, got, test.want)
+			t.Errorf("ParseDate(%q) = %v, want %v", test.in, got.t.Format(time.DateTime), test.want.Format(time.DateTime))
 		}
 	}
 }

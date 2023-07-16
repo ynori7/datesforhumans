@@ -4,25 +4,31 @@ import "time"
 
 // ParseDate parses a natural language date string and returns the date time object
 func ParseDate(from time.Time, s string) Time {
-	dateConfig := parseNaturalDateString(s)
+	dateConfig, timeConfig := parseNaturalDateString(s)
 
 	if dateConfig.isEmpty() {
 		return Time{t: from}
 	}
 
+	if timeConfig.isEmpty() {
+		timeConfig.hour = from.Hour()
+		timeConfig.minute = from.Minute()
+		timeConfig.second = from.Second()
+	}
+
 	if dateConfig.period != unknown {
 		switch dateConfig.period {
 		case day:
-			return Time{t: from.AddDate(0, 0, dateConfig.direction*getAmountOrOne(dateConfig)), dateString: s}
+			return Time{t: from.AddDate(0, 0, dateConfig.direction*getAmountOrOne(dateConfig)), dateString: s}.at(timeConfig)
 		case week:
-			return Time{t: from.AddDate(0, 0, dateConfig.direction*7*getAmountOrOne(dateConfig)), dateString: s}
+			return Time{t: from.AddDate(0, 0, dateConfig.direction*7*getAmountOrOne(dateConfig)), dateString: s}.at(timeConfig)
 		case month:
 			if dateConfig.amount == unknown {
 				return Time{t: time.Date(from.Year(), from.Month()+time.Month(dateConfig.direction), 1, 0, 0, 0, 0, from.Location()), dateString: s}
 			}
-			return Time{t: from.AddDate(0, dateConfig.direction*dateConfig.amount, 0), dateString: s}
+			return Time{t: from.AddDate(0, dateConfig.direction*dateConfig.amount, 0), dateString: s}.at(timeConfig)
 		case year:
-			return Time{t: from.AddDate(dateConfig.direction*getAmountOrOne(dateConfig), 0, 0), dateString: s}
+			return Time{t: from.AddDate(dateConfig.direction*getAmountOrOne(dateConfig), 0, 0), dateString: s}.at(timeConfig)
 		case hour:
 			return Time{t: from.Add(time.Duration(dateConfig.direction*getAmountOrOne(dateConfig)) * time.Hour), dateString: s}
 		case minute:
@@ -33,14 +39,14 @@ func ParseDate(from time.Time, s string) Time {
 	}
 
 	if dateConfig.weekDay != unknown {
-		return Time{t: getNextWeekday(from, time.Weekday(dateConfig.weekDay), dateConfig.direction), dateString: s}
+		return Time{t: getNextWeekday(from, time.Weekday(dateConfig.weekDay), dateConfig.direction), dateString: s}.at(timeConfig)
 	}
 
 	if dateConfig.month != unknown {
 		return Time{t: getNextMonth(from, time.Month(dateConfig.month), dateConfig.direction), dateString: s}
 	}
 
-	return Time{t: from, dateString: s}
+	return Time{t: from, dateString: s}.at(timeConfig)
 }
 
 func getNextWeekday(date time.Time, weekday time.Weekday, direction int) time.Time {

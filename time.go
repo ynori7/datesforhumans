@@ -18,11 +18,16 @@ func (t Time) Time() time.Time {
 // At parses a natural language time string and returns a new time object at the specified time
 func (t Time) At(s string) Time {
 	timeConfig := parseTime(s)
+	t = t.at(timeConfig)
+	t.timeString = s
+
+	return t
+}
+
+func (t Time) at(timeConfig timeOfDay) Time {
 	if !timeConfig.isEmpty() {
 		t.t = time.Date(t.t.Year(), t.t.Month(), t.t.Day(), timeConfig.hour, timeConfig.minute, timeConfig.second, 0, t.t.Location())
 	}
-
-	t.timeString = s
 
 	return t
 }
@@ -50,22 +55,18 @@ type Range struct {
 	Start Time
 	End   Time
 
-	startString    string
-	endString      string
-	startTimeOfDay string
-	endTimeOfDay   string
+	startString string
+	endString   string
 }
 
 // ParseRange parses a natural language date string and returns the date time object
-func ParseRange(from time.Time, startDate string, startTime string, endDate string, endTime string) Range {
+func ParseRange(from time.Time, start string, end string) Range {
 	r := Range{
-		startString:    startDate,
-		endString:      endDate,
-		startTimeOfDay: startTime,
-		endTimeOfDay:   endTime,
+		startString: start,
+		endString:   end,
 	}
-	r.Start = ParseDate(from, startDate).At(startTime)
-	r.End = ParseDate(r.Start.t, endDate).At(endTime)
+	r.Start = ParseDate(from, start)
+	r.End = ParseDate(r.Start.t, end)
 
 	return r
 }
@@ -77,7 +78,7 @@ func (r Range) Repeat(until time.Time) []Range {
 
 	current := r.Start.t
 	for current.Before(until) {
-		r2 := ParseRange(current, r.startString, r.startTimeOfDay, r.endString, r.endTimeOfDay)
+		r2 := ParseRange(current, r.startString, r.endString)
 		if r2.Start.t.After(until) {
 			break
 		}

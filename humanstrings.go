@@ -20,8 +20,9 @@ func (d dateConfig) isEmpty() bool {
 }
 
 // ParseNaturalDateString parses a natural language date string and returns the date configuration
-func parseNaturalDateString(s string) dateConfig {
+func parseNaturalDateString(s string) (dateConfig, timeOfDay) {
 	s = strings.ToLower(strings.TrimSpace(s))
+	timeOfDay := defaultTimeOfDay
 
 	date := dateConfig{
 		direction: parseDirection(s),
@@ -29,6 +30,12 @@ func parseNaturalDateString(s string) dateConfig {
 		month:     unknown,
 		period:    unknown,
 		amount:    unknown,
+	}
+
+	parts := strings.Split(s, " "+timeOfDayIndicator+" ")
+	if len(parts) == 2 {
+		timeOfDay = parseTime(parts[1])
+		s = strings.TrimSpace(parts[0])
 	}
 
 	if d := parseDayShortcuts(s); d != unknown {
@@ -40,10 +47,10 @@ func parseNaturalDateString(s string) dateConfig {
 		case yesterday:
 			date.direction = last
 		}
-		return date
+		return date, timeOfDay
 	}
 
-	parts := strings.Split(s, " ")
+	parts = strings.Split(s, " ")
 	for _, p := range parts {
 		p = strings.TrimSpace(p)
 
@@ -72,7 +79,7 @@ func parseNaturalDateString(s string) dateConfig {
 		date.direction = next
 	}
 
-	return date
+	return date, timeOfDay
 }
 
 const unknown = -1
@@ -199,9 +206,15 @@ func parseDayShortcuts(s string) int {
 }
 
 const (
+	timeOfDayIndicator = "at"
+)
+
+const (
 	am = "am"
 	pm = "pm"
 )
+
+var defaultTimeOfDay = timeOfDay{hour: -1}
 
 type timeOfDay struct {
 	hour   int
@@ -226,12 +239,12 @@ func parseTime(s string) timeOfDay {
 
 	parts := strings.Split(s, ":")
 	if len(parts) > 3 || len(parts) == 0 {
-		return timeOfDay{hour: -1}
+		return defaultTimeOfDay
 	}
 
 	hour, err := strconv.Atoi(parts[0])
 	if err != nil {
-		return timeOfDay{hour: -1}
+		return defaultTimeOfDay
 	}
 	if hour == 12 && amPmModifier == 12 {
 		amPmModifier = 0
@@ -249,14 +262,14 @@ func parseTime(s string) timeOfDay {
 
 	minute, err := strconv.Atoi(parts[1])
 	if err != nil {
-		return timeOfDay{hour: -1}
+		return defaultTimeOfDay
 	}
 
 	second := 0
 	if len(parts) == 3 {
 		second, err = strconv.Atoi(parts[2])
 		if err != nil {
-			return timeOfDay{hour: -1}
+			return defaultTimeOfDay
 		}
 	}
 
