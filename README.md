@@ -13,6 +13,7 @@ You can take any base time (e.g. `time.Now()`) and transform it using natural la
 - in 15 seconds
 - next year
 - next monday at 10pm
+- today at noon
 
 Example usage (see it in `example/main.go`):
 
@@ -62,3 +63,4 @@ for _, r := range repeated {
 
 ### Caveats
 - Note that if it's July 17 and you request "next August", you'll get August 1. However if you say "in 1 month" you'll get August 17. It's worth noting there are edge cases where it's January 30 and you say "in 1 month" (returns March 2nd).
+- Results are unpredictable if you give it nonsensical strings like "in 2 weeks ago" or "next potato at 3pm".

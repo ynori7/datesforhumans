@@ -32,12 +32,14 @@ func parseNaturalDateString(s string) (dateConfig, timeOfDay) {
 		amount:    unknown,
 	}
 
+	//If there is a time of day, parse it out
 	parts := strings.Split(s, " "+timeOfDayIndicator+" ")
 	if len(parts) == 2 {
 		timeOfDay = parseTime(parts[1])
 		s = strings.TrimSpace(parts[0])
 	}
 
+	//Parse day shortcuts like "today" or "tomorrow"
 	if d := parseDayShortcuts(s); d != unknown {
 		date.period = day
 		date.amount = 1
@@ -46,10 +48,13 @@ func parseNaturalDateString(s string) (dateConfig, timeOfDay) {
 			date.direction = next
 		case yesterday:
 			date.direction = last
+		case today:
+			date.direction = current
 		}
 		return date, timeOfDay
 	}
 
+	//Parse the date
 	parts = strings.Split(s, " ")
 	for _, p := range parts {
 		p = strings.TrimSpace(p)
@@ -85,8 +90,9 @@ func parseNaturalDateString(s string) (dateConfig, timeOfDay) {
 const unknown = -1
 
 const (
-	next = 1
-	last = -1
+	next    = 1
+	last    = -1
+	current = 0
 )
 
 var directionIndicators = map[string]int{
@@ -193,6 +199,7 @@ func parseTimePeriod(s string) int {
 const (
 	tomorrow = iota
 	yesterday
+	today
 )
 
 func parseDayShortcuts(s string) int {
@@ -201,9 +208,13 @@ func parseDayShortcuts(s string) int {
 		return tomorrow
 	case "yesterday":
 		return yesterday
+	case "today":
+		return today
 	}
 	return unknown
 }
+
+/*********Time of Day*********/
 
 const (
 	timeOfDayIndicator = "at"
@@ -229,6 +240,17 @@ func (t timeOfDay) isEmpty() bool {
 func parseTime(s string) timeOfDay {
 	s = strings.ToLower(strings.TrimSpace(s))
 
+	// Parse time shortcuts like "midnight" or "noon"
+	if d := parseTimeShortcuts(s); d != unknown {
+		switch d {
+		case midnight:
+			return timeOfDay{hour: 0}
+		case noon:
+			return timeOfDay{hour: 12}
+		}
+	}
+
+	// Parse am/pm
 	amPmModifier := 0
 	s = strings.TrimSuffix(s, am)
 	if strings.HasSuffix(s, pm) {
@@ -237,11 +259,13 @@ func parseTime(s string) timeOfDay {
 	}
 	s = strings.TrimSpace(s) //in case we trimmed off the am/pm
 
+	// Parse the time
 	parts := strings.Split(s, ":")
 	if len(parts) > 3 || len(parts) == 0 {
 		return defaultTimeOfDay
 	}
 
+	// Parse the hour
 	hour, err := strconv.Atoi(parts[0])
 	if err != nil {
 		return defaultTimeOfDay
@@ -260,11 +284,13 @@ func parseTime(s string) timeOfDay {
 		}
 	}
 
+	// Parse the minute
 	minute, err := strconv.Atoi(parts[1])
 	if err != nil {
 		return defaultTimeOfDay
 	}
 
+	// Parse the second
 	second := 0
 	if len(parts) == 3 {
 		second, err = strconv.Atoi(parts[2])
@@ -278,4 +304,19 @@ func parseTime(s string) timeOfDay {
 		minute: minute,
 		second: second,
 	}
+}
+
+const (
+	midnight = iota
+	noon
+)
+
+func parseTimeShortcuts(s string) int {
+	switch s {
+	case "midnight":
+		return midnight
+	case "noon":
+		return noon
+	}
+	return unknown
 }

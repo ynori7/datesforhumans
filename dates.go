@@ -10,12 +10,14 @@ func ParseDate(from time.Time, s string) Time {
 		return Time{t: from}
 	}
 
+	//Use the current time if no time was specified
 	if timeConfig.isEmpty() {
 		timeConfig.hour = from.Hour()
 		timeConfig.minute = from.Minute()
 		timeConfig.second = from.Second()
 	}
 
+	//This is a "period" like "next week" or "last month"
 	if dateConfig.period != unknown {
 		switch dateConfig.period {
 		case day:
@@ -38,10 +40,12 @@ func ParseDate(from time.Time, s string) Time {
 		}
 	}
 
+	//This is a "weekday" like "next monday" or "last tuesday"
 	if dateConfig.weekDay != unknown {
 		return Time{t: getNextWeekday(from, time.Weekday(dateConfig.weekDay), dateConfig.direction), dateString: s}.at(timeConfig)
 	}
 
+	//This is a "month" like "next january" or "last february"
 	if dateConfig.month != unknown {
 		return Time{t: getNextMonth(from, time.Month(dateConfig.month), dateConfig.direction), dateString: s}
 	}
@@ -58,7 +62,7 @@ func getNextWeekday(date time.Time, weekday time.Weekday, direction int) time.Ti
 
 	if direction == last {
 		daysDiff -= 7
-		if daysDiff == 0 {
+		if daysDiff == 0 { //if it's the same day of the week, go back a week
 			daysDiff = -7
 		}
 	}
@@ -75,7 +79,7 @@ func getNextMonth(date time.Time, month time.Month, direction int) time.Time {
 
 	if direction == last {
 		monthsDiff -= 12
-		if monthsDiff == 0 {
+		if monthsDiff == 0 { //if it's the same month, go back a year
 			monthsDiff = -12
 		}
 	}

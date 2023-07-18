@@ -21,6 +21,10 @@ func TestParseDate(t *testing.T) {
 			want: time.Date(2023, time.July, 14, 17, 4, 0, 0, time.UTC),
 		},
 		{
+			in:   "today",
+			want: base,
+		},
+		{
 			in:   "next monday",
 			want: time.Date(2023, time.July, 17, 17, 4, 0, 0, time.UTC),
 		},
@@ -115,6 +119,18 @@ func TestParseDate(t *testing.T) {
 		{
 			in:   "last monday at 10pm",
 			want: time.Date(2023, time.July, 10, 22, 0, 0, 0, time.UTC),
+		},
+		{
+			in:   "today at 10pm",
+			want: time.Date(2023, time.July, 15, 22, 0, 0, 0, time.UTC),
+		},
+		{
+			in:   "today at noon",
+			want: time.Date(2023, time.July, 15, 12, 0, 0, 0, time.UTC),
+		},
+		{
+			in:   "tomorrow at midnight",
+			want: time.Date(2023, time.July, 16, 0, 0, 0, 0, time.UTC),
 		},
 	}
 

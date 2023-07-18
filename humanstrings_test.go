@@ -31,6 +31,16 @@ func TestParseNaturalDateString(t *testing.T) {
 			},
 		},
 		{
+			in: "today",
+			want: dateConfig{
+				direction: current,
+				weekDay:   unknown,
+				month:     unknown,
+				period:    day,
+				amount:    1,
+			},
+		},
+		{
 			in: "next monday",
 			want: dateConfig{
 				direction: next,
@@ -272,6 +282,28 @@ func TestParseNaturalDateStringWithTime(t *testing.T) {
 				amount:    unknown,
 			},
 			wantTime: timeOfDay{hour: 11, minute: 30, second: 0},
+		},
+		{
+			in: "tomorrow at midnight",
+			want: dateConfig{
+				direction: next,
+				weekDay:   unknown,
+				month:     unknown,
+				period:    day,
+				amount:    1,
+			},
+			wantTime: timeOfDay{hour: 0, minute: 0, second: 0},
+		},
+		{
+			in: "yesterday at noon",
+			want: dateConfig{
+				direction: last,
+				weekDay:   unknown,
+				month:     unknown,
+				period:    day,
+				amount:    1,
+			},
+			wantTime: timeOfDay{hour: 12, minute: 0, second: 0},
 		},
 	}
 
