@@ -77,7 +77,7 @@ for _, r := range repeated {
 // 2023-07-31 22:00:00 - 2023-08-01 23:00:00
 ```
 
-### Caveats
+## Caveats
 - Note that if it's July 17 and you request "next August", you'll get August 1. However if you say "in 1 month" you'll get August 17. It's worth noting there are edge cases where it's January 30 and you say "in 1 month" (returns March 2nd).
 - If you give it a nonsensical input string, you'll get back the input time with the flag IsValid = false
 - This library assumes a week begins with Sunday (like stdlib "time" does). So when you ask for "this sunday" on a saturday, it'll return the previous sunday instead of tomorrow
