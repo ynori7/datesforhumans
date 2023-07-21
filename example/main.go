@@ -58,7 +58,7 @@ func Range() {
 	fmt.Printf("Range (from %s)\n", now.Format(time.DateTime))
 
 	r := datesforhumans.ParseRange(now, "next monday at 10pm", "next tuesday at 11pm")
-	fmt.Println(`datesforhumans.ParseRange(now, "next monday at 10pm", "next tuesday at 11pm"):`, r.Start.Time().Format(time.DateTime), "-", r.End.Time().Format(time.DateTime)) //prints 2023-07-17 22:00:00 2023-07-18 23:00:00
+	fmt.Println(`datesforhumans.ParseRange(now, "next monday at 10pm", "next tuesday at 11pm"):`, r.Start.Time().Format(time.DateTime), "-", r.End.Time().Format(time.DateTime)) //prints 2023-07-17 22:00:00 - 2023-07-18 23:00:00
 
 	fmt.Println("")
 

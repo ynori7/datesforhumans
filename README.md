@@ -23,6 +23,8 @@ You can take any base time (e.g. `time.Now()`) and transform it using natural la
 
 Example usage (see it in `example/main.go`):
 
+### Basic Parsing
+
 ```go
 now := time.Now() //e.g. 2023-07-15 17:03:00
 t := datesforhumans.ParseDate(now, "next monday").At("10pm").Time() //t is a standard time.Time
@@ -37,6 +39,8 @@ t3 := datesforhumans.FromNow("next monday at 10pm").Time() //FromNow() is a shor
 fmt.Println(t.Format(time.DateTime)) //prints 2023-07-17 22:00:00
 ```
 
+### Repeating
+
 This pattern can also be repeated until a given date:
 
 ```go
@@ -50,12 +54,14 @@ for _, r := range repeated {
 // 2023-07-31 22:00:00
 ```
 
+### Ranges
+
 It's also possible to create date ranges, for example:
 
 ```go
 now := time.Now() //e.g. 2023-07-15 17:03:00
 r := ParseRange(now, "next monday at 10pm", "next tuesday at 11pm")
-fmt.Println(r.Start.Time().Format(time.DateTime), r.End.Time().Format(time.DateTime)) //prints 2023-07-17 22:00:00
+fmt.Println(r.Start.Time().Format(time.DateTime), "-", r.End.Time().Format(time.DateTime)) //prints 2023-07-17 22:00:00 - 2023-07-18 23:00:00
 ```
 
 The ranges can also automatically be repeated until a given date:
@@ -63,12 +69,12 @@ The ranges can also automatically be repeated until a given date:
 ```go
 repeated := r.Repeat(datesforhumans.ParseDate(now, "next August").Time())
 for _, r := range repeated {
-    fmt.Println(r.Start.Time().Format(time.DateTime), r.End.Time().Format(time.DateTime))
+    fmt.Println(r.Start.Time().Format(time.DateTime), "-", r.End.Time().Format(time.DateTime))
 }
 // Prints:
-// 2023-07-17 22:00:00 2023-07-18 23:00:00
-// 2023-07-24 22:00:00 2023-07-25 23:00:00
-// 2023-07-31 22:00:00 2023-08-01 23:00:00
+// 2023-07-17 22:00:00 - 2023-07-18 23:00:00
+// 2023-07-24 22:00:00 - 2023-07-25 23:00:00
+// 2023-07-31 22:00:00 - 2023-08-01 23:00:00
 ```
 
 ### Caveats
