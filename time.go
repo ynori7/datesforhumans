@@ -1,10 +1,15 @@
 package datesforhumans
 
-import "time"
+import (
+	"time"
 
-// Time is a wrapper around the stdlib time object
+	"github.com/ynori7/datesforhumans/internal/naturallanguage"
+)
+
+// Time is a wrapper around the stdlib time object. In case parsing was not possible, IsValid will be false
 type Time struct {
-	t time.Time
+	t       time.Time
+	IsValid bool
 
 	dateString string
 	timeString string
@@ -17,16 +22,17 @@ func (t Time) Time() time.Time {
 
 // At parses a natural language time string and returns a new time object at the specified time
 func (t Time) At(s string) Time {
-	timeConfig := parseTime(s)
+	timeConfig := naturallanguage.ParseTime(s)
 	t = t.at(timeConfig)
 	t.timeString = s
 
 	return t
 }
 
-func (t Time) at(timeConfig timeOfDay) Time {
-	if !timeConfig.isEmpty() {
-		t.t = time.Date(t.t.Year(), t.t.Month(), t.t.Day(), timeConfig.hour, timeConfig.minute, timeConfig.second, 0, t.t.Location())
+// at sets the time of day on the time object
+func (t Time) at(timeConfig naturallanguage.TimeOfDay) Time {
+	if !timeConfig.IsEmpty() {
+		t.t = time.Date(t.t.Year(), t.t.Month(), t.t.Day(), timeConfig.Hour, timeConfig.Minute, timeConfig.Second, 0, t.t.Location())
 	}
 
 	return t
@@ -48,43 +54,4 @@ func (t Time) Repeat(until time.Time) []Time {
 	}
 
 	return times
-}
-
-// Range is a tuple of a starting and ending time
-type Range struct {
-	Start Time
-	End   Time
-
-	startString string
-	endString   string
-}
-
-// ParseRange parses a natural language date string and returns the date time object
-func ParseRange(from time.Time, start string, end string) Range {
-	r := Range{
-		startString: start,
-		endString:   end,
-	}
-	r.Start = ParseDate(from, start)
-	r.End = ParseDate(r.Start.t, end)
-
-	return r
-}
-
-// Repeat returns a slice of ranges that repeat until the specified time
-func (r Range) Repeat(until time.Time) []Range {
-	var ranges []Range
-	ranges = append(ranges, r)
-
-	current := r.Start.t
-	for current.Before(until) {
-		r2 := ParseRange(current, r.startString, r.endString)
-		if r2.Start.t.After(until) {
-			break
-		}
-		ranges = append(ranges, r2)
-		current = r2.Start.t
-	}
-
-	return ranges
 }

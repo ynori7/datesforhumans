@@ -1,5 +1,7 @@
 # Dates For Humans
-This library is a helper to transform natural language date time info into real times.
+This library is a helper to transform natural language date time info into real times. 
+
+The original usecase for this library was a requirement to have simple configuration in a config file for date patterns (e.g. to represent "every monday"). This allowed me to make the date patterns configurable in a simple human-readable way, thereby avoiding hardcoded logic. This project has since grown into a fully-fledged natural language parser for dates/times.
 
 ### Usage
 You can take any base time (e.g. `time.Now()`) and transform it using natural language. For example:
@@ -14,6 +16,10 @@ You can take any base time (e.g. `time.Now()`) and transform it using natural la
 - next year
 - next monday at 10pm
 - today at noon
+- this july
+- july
+- monday
+- at 3pm
 
 Example usage (see it in `example/main.go`):
 
@@ -24,6 +30,10 @@ fmt.Println(t.Format(time.DateTime)) //prints 2023-07-17 22:00:00
 
 //alternatively
 t2 := datesforhumans.ParseDate(now, "next monday at 10pm").Time() //t is a standard time.Time
+fmt.Println(t.Format(time.DateTime)) //prints 2023-07-17 22:00:00
+
+//or simply
+t3 := datesforhumans.FromNow("next monday at 10pm").Time() //FromNow() is a shortcut for ParseDate(time.Now(), "string")
 fmt.Println(t.Format(time.DateTime)) //prints 2023-07-17 22:00:00
 ```
 
@@ -63,4 +73,7 @@ for _, r := range repeated {
 
 ### Caveats
 - Note that if it's July 17 and you request "next August", you'll get August 1. However if you say "in 1 month" you'll get August 17. It's worth noting there are edge cases where it's January 30 and you say "in 1 month" (returns March 2nd).
-- Results are unpredictable if you give it nonsensical strings like "in 2 weeks ago" or "next potato at 3pm".
+- If you give it a nonsensical input string, you'll get back the input time with the flag IsValid = false
+- This library assumes a week begins with Sunday (like stdlib "time" does). So when you ask for "this sunday" on a saturday, it'll return the previous sunday instead of tomorrow
+- If you say simply "july" or "monday", it assumes you mean "this july" or "this monday"
+- If you provide only a time (e.g. "at 3pm"), it assumes you mean "today at 3pm"
