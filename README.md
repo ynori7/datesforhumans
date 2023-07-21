@@ -3,7 +3,7 @@ This library is a helper to transform natural language date time info into real 
 
 The original usecase for this library was a requirement to have simple configuration in a config file for date patterns (e.g. to represent "every monday"). This allowed me to make the date patterns configurable in a simple human-readable way, thereby avoiding hardcoded logic. This project has since grown into a fully-fledged natural language parser for dates/times.
 
-### Usage
+## Usage
 You can take any base time (e.g. `time.Now()`) and transform it using natural language. For example:
 
 - 10 minutes ago
